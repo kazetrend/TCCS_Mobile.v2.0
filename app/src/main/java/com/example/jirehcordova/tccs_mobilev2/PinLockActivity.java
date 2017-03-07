@@ -73,9 +73,9 @@ public class PinLockActivity extends Activity{
         switch (requestCode){
             case REQUEST_CODE_SET_PIN : {
                 if(resultCode == PinListener.SUCCESS){
-                    Toast.makeText(this, "Pin is set :)", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Pin Created Successfully ", Toast.LENGTH_SHORT).show();
                 } else if(resultCode == PinListener.CANCELLED) {
-                    Toast.makeText(this, "Pin set cancelled :|", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Pin Create Cancelled", Toast.LENGTH_SHORT).show();
                 }
                 refreshActivity();
                 break;
@@ -85,15 +85,17 @@ public class PinLockActivity extends Activity{
                     Intent intent = new Intent(PinLockActivity.this, SetUpPinActivity.class);
                     startActivityForResult(intent, REQUEST_CODE_SET_PIN);
                 } else if(resultCode == PinListener.CANCELLED){
-                    Toast.makeText(this, "Pin change cancelled :|", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Pin change cancelled", Toast.LENGTH_SHORT).show();
+                    finishAffinity();
                 }
                 break;
             }
             case REQUEST_CODE_CONFIRM_PIN : {
                 if(resultCode == PinListener.SUCCESS){
-                    Toast.makeText(this, "Pin is correct :)", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Pin Authentication Success", Toast.LENGTH_SHORT).show();
                 } else if(resultCode == PinListener.CANCELLED) {
-                    Toast.makeText(this, "Pin confirm cancelled :|", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, "Pin confirm cancelled :|", Toast.LENGTH_SHORT).show();
+                    finishAffinity();
                 }
                 break;
             }

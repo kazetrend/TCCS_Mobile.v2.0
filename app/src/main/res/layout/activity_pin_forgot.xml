@@ -46,7 +46,7 @@
             android:textSize="14sp" />
 
         <Button
-            android:text="SET UP PIN"
+            android:text="Set Up New Pin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/setPin"
@@ -57,7 +57,7 @@
             android:layout_alignParentEnd="true" />
 
         <Button
-            android:text="Complete Login"
+            android:text="Request Change Pin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/submit"

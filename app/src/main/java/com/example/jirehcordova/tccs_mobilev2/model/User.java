@@ -8,13 +8,13 @@ import java.io.Serializable;
 
 public class User implements Serializable {
     private int id;
-    private String firstname;
+    private String firstName;
     private String lastname;
     private String email;
     private boolean isFirstLogin;
     public User(int id, String firstName, String lastname, boolean isFirstLogin, String hashedPin, String email) {
         this.id = id;
-        this.firstname = firstName;
+        this.firstName = firstName;
         this.lastname = lastname;
         this.isFirstLogin = isFirstLogin;
         this.hashedPin = hashedPin;
@@ -43,11 +43,11 @@ public class User implements Serializable {
     }
 
     public String getFirstname() {
-        return firstname;
+        return firstName;
     }
 
     public void setFirstname(String firstname) {
-        this.firstname = firstname;
+        this.firstName= firstname;
     }
 
     public String getLastname() {

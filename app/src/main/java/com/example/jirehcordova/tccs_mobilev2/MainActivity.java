@@ -34,13 +34,14 @@ import static android.widget.Toast.LENGTH_LONG;
 public class MainActivity extends Activity implements View.OnClickListener{
     Button btn;
     public static final String KEY_LOGGED_IN = "isloggedin";
+    int proc = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.clockeractivity);
 
-        SharedPreferences main = getSharedPreferences("AppPref", 0);
+        final SharedPreferences main = getSharedPreferences("AppPref", 0);
         SharedPreferences.Editor editor = main.edit();
 
         TextView welcomemsg = (TextView)findViewById(R.id.welcome);
@@ -61,8 +62,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         final MaterialDialog dialog = new MaterialDialog.Builder(this).content("Logging In. Please wait a moment.").progress(true, 0).cancelable(false).build();
         dialog.show();
 
-        SharedPreferences main = getSharedPreferences("AppPref", 0);
-        SharedPreferences.Editor editor = main.edit();
+        final SharedPreferences main = getSharedPreferences("AppPref", 0);
+        final SharedPreferences.Editor editor = main.edit();
 
         String email = main.getString("eemail", "");
 
@@ -74,7 +75,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
             e.printStackTrace();
         }
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, "http://192.168.43.44:8080/api/v1/clock", body, new Response.Listener<JSONObject>() {
+        final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, "http://192.168.43.44:8080/api/v1/clock", body, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 if (dialog.isShowing()) {
@@ -83,15 +84,27 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 Log.d("response", response.toString());
                 Gson gson = new Gson();
                 responds resp = gson.fromJson(response.toString(), responds.class);
+                if(main.getBoolean(KEY_LOGGED_IN, false)){
+                    editor.putBoolean(KEY_LOGGED_IN, false);
+                    btn.setText("CLOCK IN");
+                }else{
+                    editor.putBoolean(KEY_LOGGED_IN, true);
+                    btn.setText("CLOCK OUT");
+                }
+                editor.commit();
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this, "You have already Clocked In/Out for today!", LENGTH_LONG).show();
-                final MaterialDialog fail = new MaterialDialog.Builder(MainActivity.this).content("You have already clocked In/Out for today! Good day! I said Good day!").progress(true, 0).cancelable(true).build();
-                fail.show();
-                /*Intent intent = new Intent(MainActivity.this, MainActivity.class);
-                startActivity(intent);*/
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                new MaterialDialog.Builder(MainActivity.this)
+                        .title("UNAUTHORIZED")
+                        .content("You have already Clocked In/ Out for today. You may do so on your next shift.")
+                        .positiveText("Okay")
+                        .show();
                 error.printStackTrace();
             }
         });
@@ -105,19 +118,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         SharedPreferences.Editor editor = main.edit();
         switch(v.getId()){
             case R.id.changeling:
-                Toast.makeText(MainActivity.this, "Let's make this button for clock in & out requests", Toast.LENGTH_SHORT).show();
-
-                if(main.getBoolean(KEY_LOGGED_IN, false)){
-                    editor.putBoolean(KEY_LOGGED_IN, false);
-                    clockRequest();
-                    btn.setText("CLOCK IN");
-                }else{
-                    editor.putBoolean(KEY_LOGGED_IN, true);
-                    btn.setText("CLOCK OUT");
-                    clockRequest();
-                }
-                editor.commit();
-                //finishAffinity();
+                clockRequest();
                 break;
         }
     }

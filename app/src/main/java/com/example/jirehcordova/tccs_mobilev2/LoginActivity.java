@@ -48,7 +48,9 @@ public class LoginActivity extends Activity {
         final EditText defPin = (EditText)findViewById(R.id.defaultpin);
 
         Button setPin = (Button)findViewById(R.id.setPin);
-        Button submit = (Button)findViewById(R.id.submit);
+        final Button submit = (Button)findViewById(R.id.submit);
+
+        submit.setEnabled(false);
 
         final RelativeLayout kai = (RelativeLayout)findViewById(R.id.kai);
         setPin.setOnClickListener(new View.OnClickListener(){
@@ -57,6 +59,7 @@ public class LoginActivity extends Activity {
                 kai.removeView(button);
                 Intent intent = new Intent(LoginActivity.this,SetUpPinActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_SET_PIN);
+                submit.setEnabled(true);
             }
         });
 
@@ -73,6 +76,8 @@ public class LoginActivity extends Activity {
 
         final MaterialDialog dialog = new MaterialDialog.Builder(this).content("Logging In. Please wait a moment.").progress(true, 0).cancelable(false).build();
         dialog.show();
+        SharedPreferences secure = getSharedPreferences("prefs", MODE_PRIVATE);
+        final SharedPreferences.Editor set = secure.edit();
 
         JSONObject body = new JSONObject();
         try{
@@ -98,19 +103,14 @@ public class LoginActivity extends Activity {
                 editor.putString("name", namee);
                 editor.putString("eemail", eemail);
                 editor.commit();
+                set.putBoolean("firstRun", false);
+                editor.commit();
+                Log.d("check1", pinLockPrefs.getString("name", ""));
+
                 Boolean firstlogin = user.getisFirstlogin();
 
                 Intent intent = new Intent (LoginActivity.this, MainActivity.class);
                 startActivity(intent);
-                /*if (firstlogin==true) {
-                    // prompt user to change pin and send again new pin to server
-                    intent = new Intent(LoginActivity.this, PinLockActivity.class);
-                    startActivity(intent);
-                } else {
-                    //enter into the app
-                    intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                }*/
             }
         }, new Response.ErrorListener() {
             @Override
@@ -128,6 +128,7 @@ public class LoginActivity extends Activity {
             case REQUEST_CODE_SET_PIN: {
                 if (resultCode == PinListener.SUCCESS) {
                     Toast.makeText(this, "Pin is set :)", Toast.LENGTH_SHORT).show();
+
                 } else if (resultCode == PinListener.CANCELLED) {
                     Toast.makeText(this, "Pin set cancelled :|", Toast.LENGTH_SHORT).show();
                 }

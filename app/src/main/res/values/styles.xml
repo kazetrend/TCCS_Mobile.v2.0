@@ -33,7 +33,11 @@
         <item name="statusFilledBackground">@drawable/dot_filled</item>
         <item name="statusDotDiameter">8dp</item>
         <item name="statusDotSpacing">10dp</item>
+    </style>
 
+    <style name="SplashTheme">
+        <item name="android:background">@drawable/splash</item>
+        <item name="android:windowAnimationStyle">@null</item>
     </style>
 
 </resources>

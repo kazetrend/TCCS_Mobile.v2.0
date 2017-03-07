@@ -6,13 +6,14 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.manusunny.pinlock.ConfirmPinActivity;
-
+import com.manusunny.pinlock.PinListener;
 /**
  * Created by Jireh Cordova on 03/03/2017.
  */
 
 public class ConfirmPin extends ConfirmPinActivity {
     private String currentPin;
+    public static final int REQUEST_CODE_CONFIRM_PIN = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -30,11 +31,10 @@ public class ConfirmPin extends ConfirmPinActivity {
 
     @Override
     public void onForgotPin() {
-        Toast.makeText(this, "lol! What a loser!!", Toast.LENGTH_SHORT).show();
-        /*new MaterialDialog.Builder(this)
-                .content("Make a new Pin?")
-                .positiveText("I'd like to make a new pin")
-                .negativeText("No. I remember it now.")
-                .show();*/
+//        Toast.makeText(this, "lol! What a loser!!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Contact Admin", Toast.LENGTH_SHORT).show();
     }
+
+
+
 }
