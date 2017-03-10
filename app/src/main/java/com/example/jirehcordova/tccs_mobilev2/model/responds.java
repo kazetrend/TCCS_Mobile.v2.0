@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by Jireh Cordova on 06/03/2017.
  */
+//this model handles the basic responses from JSON OBJECTS
 
 public class responds implements Serializable {
 

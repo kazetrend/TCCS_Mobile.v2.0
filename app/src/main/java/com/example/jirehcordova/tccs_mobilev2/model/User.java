@@ -5,7 +5,8 @@ import java.io.Serializable;
 /**
  * Created by Jireh Cordova on 26/02/2017.
  */
-
+//this model handles the information received from the server about a user
+    //only accepts values pertaining to user info such as authorization, status, name, email address
 public class User implements Serializable {
     private int id;
     private String firstName;

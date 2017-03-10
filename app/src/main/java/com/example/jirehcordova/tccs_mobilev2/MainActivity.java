@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.jirehcordova.tccs_mobilev2.model.responds;
@@ -25,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import static android.widget.Toast.LENGTH_LONG;
+import static java.security.AccessController.getContext;
 
 
 /**
@@ -42,15 +45,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
         setContentView(R.layout.clockeractivity);
 
         final SharedPreferences main = getSharedPreferences("AppPref", 0);
-        SharedPreferences.Editor editor = main.edit();
-
         TextView welcomemsg = (TextView)findViewById(R.id.welcome);
 
         String name = main.getString("name","");
         welcomemsg.setText("WELCOME, "+name+"!");
 
         btn = (Button)findViewById(R.id.changeling);
-        btn.setText("CLOCK IN");
+        btn.setText("CLOCK OUT");
         btn.setOnClickListener(this);
 
         if(main.getBoolean(KEY_LOGGED_IN, false)){
@@ -58,6 +59,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         }
 
     }
+    //this handles the clockin and out requests
+
     private void clockRequest(){
         final MaterialDialog dialog = new MaterialDialog.Builder(this).content("Logging In. Please wait a moment.").progress(true, 0).cancelable(false).build();
         dialog.show();
@@ -92,6 +95,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                     btn.setText("CLOCK OUT");
                 }
                 editor.commit();
+                finishAffinity();
 
             }
         }, new Response.ErrorListener() {
@@ -100,22 +104,39 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 if (dialog.isShowing()) {
                     dialog.dismiss();
                 }
-                new MaterialDialog.Builder(MainActivity.this)
+
+                MaterialDialog onError = new MaterialDialog.Builder(MainActivity.this)
                         .title("UNAUTHORIZED")
                         .content("You have already Clocked In/ Out for today. You may do so on your next shift.")
                         .positiveText("Okay")
-                        .show();
+                        .build();
+                onError.show();
                 error.printStackTrace();
+
+                if (error.networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        if(onError.isShowing()){
+                            onError.dismiss();
+                        }
+                        MaterialDialog net = new MaterialDialog.Builder(MainActivity.this)
+                                .title("Action Failed")
+                                .content("Connection failed. Server unresponsive.")
+                                .positiveText("Okay")
+                                .build();
+                        net.show();
+                        // Show timeout error message
+                    }
+                }
             }
         });
         VolleyHelper.getInstance(this).addToRequestQueue(request);
+
+
     }
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onClick(View v) {
-        SharedPreferences main = getSharedPreferences("AppPref", 0);
-        SharedPreferences.Editor editor = main.edit();
         switch(v.getId()){
             case R.id.changeling:
                 clockRequest();

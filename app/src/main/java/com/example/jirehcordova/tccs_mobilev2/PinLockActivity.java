@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.manusunny.pinlock.PinListener;
-
+//this activity handles the responses to pin challenges as well as extends the functions of the pin abstract library
 public class PinLockActivity extends Activity{
 
     public static final int REQUEST_CODE_SET_PIN = 0;

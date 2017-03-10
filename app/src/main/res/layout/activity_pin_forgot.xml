@@ -5,25 +5,23 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="71dp">
 
         <TextView
-            android:text="PLEASE LOGIN WITH COMPANY EMAIL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="46dp"
             android:id="@+id/banner"
-            android:textAlignment="center"
-            android:textSize="18sp"
-            android:textStyle="normal|bold" />
+            android:text="ENTER PIN GIVEN IN THE EMAIL"
+            android:textStyle="normal|bold"
+            android:textAlignment="center" />
 
-        <EditText
+        <!--<EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
@@ -32,7 +30,7 @@
             android:id="@+id/emailinput"
             android:hint="Email Address"
             android:textSize="14sp"
-            android:textAlignment="textStart" />
+            android:textAlignment="textStart" />-->
 
         <EditText
             android:layout_width="match_parent"
@@ -41,7 +39,7 @@
             android:inputType="numberPassword"
             android:ems="10"
             android:id="@+id/defaultpin"
-            android:hint="Default Pin"
+            android:hint="Generated Pin(Found in Email)"
             android:textAlignment="textStart"
             android:textSize="14sp" />
 

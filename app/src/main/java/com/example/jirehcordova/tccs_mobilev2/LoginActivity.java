@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.jirehcordova.tccs_mobilev2.model.User;
@@ -32,11 +34,8 @@ import org.json.JSONObject;
 public class LoginActivity extends Activity {
 
     public static final int REQUEST_CODE_SET_PIN = 0;
-    public static final int REQUEST_CODE_CHANGE_PIN = 1;
-    public static final int REQUEST_CODE_CONFIRM_PIN = 2;
 
     static SharedPreferences pinLockPrefs;
-    static SharedPreferences Editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +45,11 @@ public class LoginActivity extends Activity {
 
         final EditText email = (EditText)findViewById(R.id.emailinput);
         final EditText defPin = (EditText)findViewById(R.id.defaultpin);
+
+//      defPin.setFilters(new InputFilter[]{});
+        InputFilter[] filters = new InputFilter[1];
+        filters[0] = new InputFilter.LengthFilter(4); //Filter to 10 characters
+        defPin.setFilters(filters);
 
         Button setPin = (Button)findViewById(R.id.setPin);
         final Button submit = (Button)findViewById(R.id.submit);
@@ -76,7 +80,7 @@ public class LoginActivity extends Activity {
 
         final MaterialDialog dialog = new MaterialDialog.Builder(this).content("Logging In. Please wait a moment.").progress(true, 0).cancelable(false).build();
         dialog.show();
-        SharedPreferences secure = getSharedPreferences("prefs", MODE_PRIVATE);
+        final SharedPreferences secure = getSharedPreferences("prefs", MODE_PRIVATE);
         final SharedPreferences.Editor set = secure.edit();
 
         JSONObject body = new JSONObject();
@@ -104,7 +108,8 @@ public class LoginActivity extends Activity {
                 editor.putString("eemail", eemail);
                 editor.commit();
                 set.putBoolean("firstRun", false);
-                editor.commit();
+                set.commit();
+
                 Log.d("check1", pinLockPrefs.getString("name", ""));
 
                 Boolean firstlogin = user.getisFirstlogin();
@@ -115,8 +120,31 @@ public class LoginActivity extends Activity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // internal server errors and 400s
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                MaterialDialog onError = new MaterialDialog.Builder(LoginActivity.this)
+                        .title("UNAUTHORIZED")
+                        .content("You are not allowed to Login as of this moment. Contact Supervisor.")
+                        .positiveText("Okay")
+                        .build();
+                onError.show();
                 error.printStackTrace();
+
+                if (error.networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        if(onError.isShowing()){
+                            onError.dismiss();
+                        }
+                        MaterialDialog net = new MaterialDialog.Builder(LoginActivity.this)
+                                .title("Action Failed")
+                                .content("Connection failed. Server unresponsive.")
+                                .positiveText("Okay")
+                                .build();
+                        net.show();
+                        // Show timeout error message
+                    }
+                }
             }
         });
 
@@ -127,10 +155,10 @@ public class LoginActivity extends Activity {
         switch (requestCode) {
             case REQUEST_CODE_SET_PIN: {
                 if (resultCode == PinListener.SUCCESS) {
-                    Toast.makeText(this, "Pin is set :)", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Pin created successfully", Toast.LENGTH_SHORT).show();
 
                 } else if (resultCode == PinListener.CANCELLED) {
-                    Toast.makeText(this, "Pin set cancelled :|", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Pin set canceled", Toast.LENGTH_SHORT).show();
                 }
                 //refreshActivity();
                 break;

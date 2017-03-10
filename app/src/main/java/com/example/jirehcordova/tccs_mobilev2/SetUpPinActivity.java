@@ -11,15 +11,16 @@ import com.manusunny.pinlock.SetPinActivity;
 
 public class SetUpPinActivity extends SetPinActivity {
 
+
     @Override
     public void onPinSet(String pin) {
+        //this takes the input from the user and saves in the sharedpreferences for future references and challenges
         String showPin;
         SharedPreferences preferences = getApplicationContext().getSharedPreferences("AppPref", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-
         editor.putString("pinCode", pin);
         editor.commit();
-        Log.d("showthepin", showPin = preferences.getString("pinCode", ""));
+        Log.d("showthepin",  preferences.getString("pinCode", ""));
         setResult(SUCCESS);
         finish();
     }

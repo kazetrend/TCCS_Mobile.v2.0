@@ -2,6 +2,7 @@ package com.example.jirehcordova.tccs_mobilev2;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -24,15 +25,15 @@ public class ConfirmPin extends ConfirmPinActivity {
 
     @Override
     public boolean isPinCorrect(String pin) {
-        /*SharedPreferences confirm = getSharedPreferences("AppPref", MODE_PRIVATE);
-        String currentPin = confirm.getString("pinCode", "");*/
+        //checks if pin matches the value from shared preferences
+        Log.d("pol", currentPin);
         return pin.equals(currentPin);
     }
 
     @Override
     public void onForgotPin() {
-//        Toast.makeText(this, "lol! What a loser!!", Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "Contact Admin", Toast.LENGTH_SHORT).show();
+//
+    Toast.makeText(this, "Contact Admin", Toast.LENGTH_SHORT).show();
     }
 
 

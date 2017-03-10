@@ -9,25 +9,26 @@
         android:allowBackup="true"
         android:excludeFromRecents="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="Mobile Login v2"
+        android:label="TCCS Mobile"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name=".splashactivity"
-            android:theme="@style/SplashTheme">
+            android:name=".Launcher"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Launcher" />
+
+        <activity android:name=".PinForgot" />
         <activity android:name=".SetUpPinActivity" />
         <activity android:name=".ConfirmPin" />
         <activity android:name=".PinLockActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".PinForgot"></activity>
-    </application>
 
+        <activity android:name=".MainActivity"/>
+
+    </application>
 </manifest>
